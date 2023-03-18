@@ -59,8 +59,8 @@ float MotorSetRPM;
 
 float Kp=1;
 float Ki=0;
-float I;
-float debug;
+float eintegral=0;
+float debug=9;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +74,7 @@ static void MX_TIM2_Init(void);
 float IC_Calc_Period();
 float ConvertRPM(float input);
 float ConvertDuty(float input);
-float Control(uint8_t setRPM,float readRPM);
+float Control(float setRPM,float readRPM);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -142,7 +142,10 @@ int main(void)
 				break;
 			case 1:Duty=Control(MotorSetRPM, MotorReadRPM);
 				break;
-
+			case 2:if(MotorSetRPM>=20)MotorSetRPM=9;
+				else MotorSetRPM+=0.1;
+				Duty=Control(MotorSetRPM, MotorReadRPM);
+				break;
 			}
 		}
 	}
@@ -436,12 +439,12 @@ float ConvertDuty(float input){
 	return (input/20.0)*100.0;
 }
 float Control(float setRPM,float readRPM){
-	float error = setRPM-readRPM;
-	SumError=SumError+((float)error*0.005);
-	I=Ki*SumError;
-	float pi = (error*Kp)+(float)I;
-	if(pi>100.0)pi=100;
-	return pi;
+	float error=setRPM-readRPM;
+	eintegral=eintegral+(error*0.005);
+	if(eintegral>20)eintegral=20;
+	float u=(Kp*error)+(Ki*eintegral);
+	if(u>100)u=100;
+	return u;
 }
 //float ConvertDuty
 /* USER CODE END 4 */
