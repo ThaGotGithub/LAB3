@@ -245,7 +245,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 1000;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
@@ -431,8 +431,8 @@ float IC_Calc_Period() {
 }
 float ConvertRPM(float input){
 	float rpm=60000000.0/(input*64.0);
-	if(rpm>100)rpm=100;
-	if(rpm<0)rpm=-1;
+	//if(rpm>100)rpm=100;
+	//if(rpm<0)rpm=-1;
 	return rpm;
 }
 float ConvertDuty(float input){
